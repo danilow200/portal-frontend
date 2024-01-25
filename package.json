@@ -1,0 +1,44 @@
+{
+  "name": "studying-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "latest",
+    "@types/google.visualization": "^0.0.69",
+    "@types/node": "18.11.9",
+    "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.9",
+    "chart.js": "^4.3.0",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "chartkick": "^5.0.1",
+    "convert-excel-to-json": "^1.7.0",
+    "eslint": "8.28.0",
+    "eslint-config-next": "13.0.4",
+    "exceljs": "^4.3.0",
+    "next": "13.0.4",
+    "react": "18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-chartkick": "^0.5.3",
+    "react-device-detect": "^2.2.3",
+    "react-dom": "18.2.0",
+    "react-google-charts": "^4.0.0",
+    "recharts": "^2.7.2",
+    "styled-components": "^5.3.6",
+    "typescript": "4.9.3",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/convert-excel-to-json": "^1.7.1",
+    "@types/jest": "^29.5.3",
+    "@types/styled-components": "^5.1.26"
+  }
+}
