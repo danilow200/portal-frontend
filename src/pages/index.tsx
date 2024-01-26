@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { LogoutButton } from "../components/logout";
 
 export default function Home() {
   const [message, setMessage] = useState("");
@@ -26,8 +27,16 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ color: "white" }}>
+    <div
+      style={{
+        color: "white",
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "12px",
+      }}
+    >
       <h3>Hi {message}</h3>
+      <LogoutButton />
     </div>
   );
 }

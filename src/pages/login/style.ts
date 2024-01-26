@@ -50,6 +50,7 @@ export const LoginButton = styled.button`
   padding: 14px;
   border: none;
   margin-top: 60px;
+  cursor: pointer;
 
   color: #fff;
   text-align: center;
@@ -62,7 +63,7 @@ export const LoginButton = styled.button`
   transition: ease-in-out 200ms;
 
   :hover {
-    cursor: pointer;
-    filter: brightness(1.2);
+    color: #28478e;
+    background: white;
   }
 `;
