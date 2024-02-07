@@ -50,17 +50,15 @@ export default function Home() {
   // Retornando o JSX para renderizar na página.
   return (
     <>
-      <Header />
+      <Header pag="HOME" />
       <div
         style={{
-          color: "white",
           display: "flex",
           justifyContent: "space-between",
           padding: "12px",
         }}
       >
         <h3>Salve Salve familia, {message}</h3>
-        <LogoutButton />
       </div>
     </>
   );

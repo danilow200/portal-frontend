@@ -1,9 +1,13 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  /* background-color: red; */
+  background-image: url('/login_bg.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  height: 100vh;
   width: 100%;
-  height: 100%;
   display: grid;
   margin: auto;
   align-items: center;
