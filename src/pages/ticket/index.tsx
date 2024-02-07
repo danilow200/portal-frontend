@@ -10,13 +10,12 @@ import styled from "styled-components";
 import axios from "axios";
 
 // Importando o componente 'LogoutButton'.
-import { LogoutButton } from "../components/logout";
-import { Header } from "../components/Header";
+import { LogoutButton } from "../../components/logout";
 
 // Definindo um componente funcional chamado 'Home'.
 export default function Home() {
   // Inicializando o estado 'message' com uma string vazia.
-  const [message, setMessage] = useState("");
+  const [tickets, setTickets] = useState([]);
 
   // Usando 'useEffect' para executar o código dentro da função quando o componente é montado.
   useEffect(() => {
@@ -35,33 +34,38 @@ export default function Home() {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
           });
-          // Atualizando o estado 'message' com a mensagem recebida da API.
-          setMessage(data.message);
-
         } catch (e) {
           // Se ocorrer um erro (por exemplo, o usuário não está autenticado), registra "not auth" no console.
           console.log("not auth");
         }
       })();
+
     }
+
+    (async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/get_tickets/");
+        console.log(response.data);
+        setTickets(response.data)
+      } catch (error) {
+        console.error(`Erro ao buscar tickets: ${error}`);
+      }
+    })();
 
   }, []);
 
   // Retornando o JSX para renderizar na página.
   return (
-    <>
-      <Header />
-      <div
-        style={{
-          color: "white",
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "12px",
-        }}
-      >
-        <h3>Salve Salve familia, {message}</h3>
-        <LogoutButton />
-      </div>
-    </>
+    <div
+      style={{
+        color: "white",
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "12px",
+      }}
+    >
+      <h1>asd</h1>
+      <LogoutButton />
+    </div>
   );
 }

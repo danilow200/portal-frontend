@@ -14,11 +14,8 @@ import { theme } from "../styles/Theme";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      // Envolvendo toda a aplicação com 'ThemeProvider' e passando o tema importado como prop.
       <ThemeProvider theme={theme}>
-        // Aplicando os estilos globais.
         <GlobalStyles />
-        // Renderizando o componente da página atual (que é passado como prop para App) com suas respectivas propriedades.
         <Component {...pageProps} />
       </ThemeProvider>
     </>
