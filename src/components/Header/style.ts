@@ -9,6 +9,7 @@ export const Container = styled.div`
   padding: 12px 16px;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   position: relative;
+  z-index: 1;
 `;
 
 export const TextContainer = styled.div`

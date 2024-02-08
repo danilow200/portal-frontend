@@ -12,6 +12,7 @@ import axios from "axios";
 // Importando o componente 'LogoutButton'.
 import { LogoutButton } from "../components/logout";
 import { Header } from "../components/Header";
+import { Navbar } from "../components/Navbar";
 
 // Definindo um componente funcional chamado 'Home'.
 export default function Home() {
@@ -53,12 +54,10 @@ export default function Home() {
       <Header pag="HOME" />
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "12px",
+          display: "grid",
         }}
       >
-        <h3>Salve Salve familia, {message}</h3>
+        <Navbar />
       </div>
     </>
   );

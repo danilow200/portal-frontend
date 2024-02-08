@@ -11,6 +11,8 @@ import axios from "axios";
 
 // Importando o componente 'LogoutButton'.
 import { LogoutButton } from "../../components/logout";
+import { Header } from "../../components/Header";
+import { Navbar } from "../../components/Navbar";
 
 // Definindo um componente funcional chamado 'Home'.
 export default function Home() {
@@ -56,16 +58,15 @@ export default function Home() {
 
   // Retornando o JSX para renderizar na página.
   return (
-    <div
-      style={{
-        color: "white",
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "12px",
-      }}
-    >
-      <h1>asd</h1>
-      <LogoutButton />
-    </div>
+    <>
+      <Header pag="TICKETS" />
+      <div
+        style={{
+          display: "grid",
+        }}
+      >
+        <Navbar />
+      </div>
+    </>
   );
 }
