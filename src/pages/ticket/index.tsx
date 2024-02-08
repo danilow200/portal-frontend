@@ -2,23 +2,24 @@
 // 'useEffect' é usado para executar efeitos colaterais em componentes funcionais.
 // 'useState' é um hook que permite adicionar o estado do React a componentes funcionais.
 import { useEffect, useState } from "react";
-
-// Importando a biblioteca 'styled-components' para estilização.
-import styled from "styled-components";
-
-// Importando a biblioteca 'axios' para fazer solicitações HTTP.
 import axios from "axios";
-
-// Importando o componente 'LogoutButton'.
-import { LogoutButton } from "../../components/logout";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
 
-// Definindo um componente funcional chamado 'Home'.
+type FilaType = {
+  nome: string,
+  entrada: string,
+  saida: string
+}
+
+type TicketType = {
+  ticket: number,
+  filas: FilaType[]
+}
+
 export default function Home() {
-  // Inicializando o estado 'message' com uma string vazia.
-  const [tickets, setTickets] = useState([]);
+  const [tickets, setTickets] = useState<TicketType[]>([]);
 
   // Usando 'useEffect' para executar o código dentro da função quando o componente é montado.
   useEffect(() => {
@@ -63,15 +64,21 @@ export default function Home() {
       <Header pag="TICKETS" />
       <div
         style={{
-          display: "grid",
+          display: "flex",
+          gap: "10px"
         }}
       >
         <Navbar />
-        {/* {tickets.map(( index,tick) => 
-          <div key={index}>
-            {tick.ticket}
-          </div>
-        )} */}
+        <div style={{display: "grid"}}>
+          {tickets.map(( tick,index) => 
+            <div key={index} style={{color: "#000", display: "flex", gap: "10px"}}>
+              {tick.ticket}
+              {tick.filas.map(( fila, index2) => 
+                <div key={index2}>{fila.nome}</div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
       <Footer />
     </>
