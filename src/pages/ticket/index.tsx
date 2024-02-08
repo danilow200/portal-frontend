@@ -67,6 +67,11 @@ export default function Home() {
         }}
       >
         <Navbar />
+        {/* {tickets.map(( index,tick) => 
+          <div key={index}>
+            {tick.ticket}
+          </div>
+        )} */}
       </div>
       <Footer />
     </>

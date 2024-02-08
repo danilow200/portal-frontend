@@ -25,6 +25,7 @@ export const NavA = styled.a`
     align-items: center;
     justify-content: start;
     gap: 8px;
+    pointer-events: none;
 
     font-size: 32px;
     text-align: start;

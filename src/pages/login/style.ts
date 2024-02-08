@@ -12,8 +12,8 @@ export const Container = styled.div`
   margin: auto;
   align-items: center;
   justify-content: center;
-  gap: 100px;
-  padding-top: 50px;
+  gap: 0px;
+  /* padding-top: 50px; */
 
   color: #fff;
   text-align: left;

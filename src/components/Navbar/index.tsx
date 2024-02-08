@@ -52,7 +52,7 @@ export const Navbar = () => {
     return (
         <Container estado={aberto}>
             <NavA>
-                <img style={{marginLeft: "4px", cursor: "pointer"}} src="./nav/ham.png" onClick={() => setAberto(!aberto)} />
+                <img style={{marginLeft: "4px", cursor: "pointer", pointerEvents: "all"}} src="./nav/ham.png" onClick={() => setAberto(!aberto)} />
                 <span style={{
                         textAlign: "center",
                         width: "100%",
@@ -72,10 +72,11 @@ export const Navbar = () => {
             }} />
             {navlink.map((index) => 
                 <NavA key={index.link} href={index.link}>
-                    <img src={index.icon} />
+                    <img src={index.icon} style={{pointerEvents: "all"}} />
                     <span style={{
                         opacity: aberto ? 1 : 0,
                         maxHeight: aberto ? "100px" : "0",
+                        pointerEvents: aberto ? "all": "none" ,
                         transition: "opacity 200ms ease-in-out, max-height 200ms ease-in-out"
                     }}>
                         {index.name}
