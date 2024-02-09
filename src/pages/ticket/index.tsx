@@ -6,6 +6,7 @@ import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
+import { Tabela } from "./style";
 
 type FilaType = {
   nome: string,
@@ -15,6 +16,12 @@ type FilaType = {
 
 type TicketType = {
   ticket: number,
+  estacao: string,
+  descricao: string,
+  prioridade: number,
+  sla: string,
+  atendimento: string,
+  categoria: string,
   filas: FilaType[]
 }
 
@@ -69,15 +76,28 @@ export default function Home() {
         }}
       >
         <Navbar />
-        <div style={{display: "grid"}}>
-          {tickets.map(( tick,index) => 
-            <div key={index} style={{color: "#000", display: "flex", gap: "10px"}}>
-              {tick.ticket}
-              {tick.filas.map(( fila, index2) => 
-                <div key={index2}>{fila.nome}</div>
+        <div>
+          <Tabela role="grid">
+            <thead>
+              <tr className="cabeca">
+                <th tabIndex={0} rowSpan={1} colSpan={1}>Ticket</th>
+                <th tabIndex={0} rowSpan={1} colSpan={1}>Site</th>
+                <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tickets.map(( tick,index) => 
+                <tr key={index} role="row">
+                  <th>{tick.ticket}</th>
+                  <th>{tick.estacao}</th>
+                  <th>{tick.categoria}</th>
+                  {/* {tick.filas.map(( fila, index2) => 
+                    <div key={index2}>{fila.nome}</div>
+                  )} */}
+                </tr>
               )}
-            </div>
-          )}
+            </tbody>
+          </Tabela>
         </div>
       </div>
       <Footer />
