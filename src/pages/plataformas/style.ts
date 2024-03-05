@@ -16,6 +16,8 @@ export const LinkBox = styled.a`
     text-align: center;
 
     span {
+        font-family: "Urbanist", sans-serif;
+        font-weight: 500;
         color: #1469ac;
         font-size: 32px;
     }
