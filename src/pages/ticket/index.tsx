@@ -6,7 +6,7 @@ import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
-import { CountArea, DowloadButton, HeaderArea, SelectArea, Tabela } from "./style";
+import { CountArea, DowloadButton, HeaderArea, NavButton, PagButton, PagContainer, SelectArea, Tabela } from "./style";
 import Image from "next/image";
 
 type FilaType = {
@@ -29,6 +29,10 @@ type TicketType = {
 
 export default function Home() {
   const [tickets, setTickets] = useState<TicketType[]>([]);
+  const [select, isSelect] = useState(false);
+  const [count, isCount] = useState(false);
+  const [countTicket, isCountTicket] = useState(10);
+  const [pagina, isPagina] = useState(0);
 
   // Usando 'useEffect' para executar o código dentro da função quando o componente é montado.
   useEffect(() => {
@@ -82,9 +86,6 @@ export default function Home() {
     }
   };
 
-  const [select, isSelect] = useState(false);
-  const [count, isCount] = useState(false);
-  const [countTicket, isCountTicket] = useState(10)
 
   const altera_select = async () => {
     if(select == true){
@@ -93,6 +94,16 @@ export default function Home() {
     if(count == true){
       isCount(false);
     }
+  }
+
+  const totalBotoes = Math.ceil(tickets.length / countTicket);
+
+  // Cria um array com os números das páginas
+  const paginas = Array.from({ length: totalBotoes }, (_, index) => index + 1);
+
+  const altera_pag_cont = async (e: { target: { value: any; }; }) =>{
+    isCountTicket(Number(e.target.value));
+    isPagina(Number(0));
   }
 
   // Retornando o JSX para renderizar na página.
@@ -112,7 +123,7 @@ export default function Home() {
               className={count? "aberto" : "fechado"} 
               onClick={() => isCount(!count)}
               value={countTicket}
-              onChange={(e) => isCountTicket(Number(e.target.value))}
+              onChange={altera_pag_cont}
             >
               <option value={"10"} onClick={() => isCountTicket(10)}>10</option>
               <option value={"25"} onClick={() => isCountTicket(25)}>25</option>
@@ -143,7 +154,7 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {tickets.slice(0, countTicket).map(( tick,index) => 
+              {tickets.slice(pagina * countTicket, countTicket * (pagina + 1)).map(( tick,index) => 
                 <tr key={index} role="row">
                   <td>{tick.ticket}</td>
                   <td>{tick.estacao}</td>
@@ -156,7 +167,47 @@ export default function Home() {
               )}
             </tbody>
           </Tabela>
-          <div style={{justifySelf: "end"}}>1 2 3 4 </div>
+          <PagContainer>
+            {pagina > 0 && 
+              <NavButton onClick={() => isPagina(pagina -1)}>&lt;</NavButton>
+            }
+            {paginas.map((pagNu, index) => {
+                if (index < 4) {
+                    // Renderiza os quatro primeiros números
+                    return (
+                        <PagButton
+                            onClick={() => isPagina(pagNu - 1)}
+                            ativo={pagina + 1 === pagNu}
+                            key={pagNu}
+                        >
+                            {pagNu}
+                        </PagButton>
+                    );
+                } else if (index === 4) {
+                    // Renderiza "..." após os quatro primeiros números
+                    return <span key="ellipsis">...</span>;
+                } else if (index === paginas.length - 1) {
+                    // Renderiza o último número
+                    return (
+                        <PagButton
+                            onClick={() => isPagina(pagNu - 1)}
+                            ativo={pagina + 1 === pagNu}
+                            key={pagNu}
+                        >
+                            {pagNu}
+                        </PagButton>
+                    );
+                }
+                return null; // Ignora outros números
+            })}
+            {pagina < totalBotoes - 1 && 
+              <NavButton onClick={() => isPagina(pagina + 1)}>&gt;</NavButton>
+            }
+            {pagina == totalBotoes - 1 && 
+              <NavButton style={{cursor: "default"}} />
+            }
+          </PagContainer>
+
         </div>
       </div>
       <Footer />

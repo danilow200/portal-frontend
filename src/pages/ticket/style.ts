@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+type PageProps = {
+  ativo?: boolean;
+};
+
 export const Tabela = styled.table`
   font-family: "Inter", sans-serif;
   min-width: 1000px;
@@ -129,7 +133,46 @@ export const CountArea = styled.select`
   }
 `;
 
-export const pageButton = styled.button`
+export const PagContainer = styled.div`
   display: flex;
-  padding: 8px;
+  align-items: center;
+  justify-content: end;
+  text-align: center;
+  gap: 10px;
+  transition: ease-in-out 200ms;
+
+  span {
+    color: #2a71b1;
+    font-size: 16px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-weight: 700;
+  }
+`;
+
+export const PagButton = styled.button<PageProps>`
+  display: flex;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  background: ${props => props.ativo ? "#2a71b1" : "#FFF"};
+  border: none;
+  color: ${props => props.ativo ? "#FFF" : "#2a71b1"};
+  cursor: pointer;
+  filter: drop-shadow(0 4px 4px rgba(0,0,0,.25));
+`;
+
+export const NavButton = styled.button`
+  display: flex;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border: none;
+  color: #2a71b1;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
 `;
