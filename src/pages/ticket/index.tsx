@@ -6,7 +6,8 @@ import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
-import { Tabela } from "./style";
+import { CountArea, DowloadButton, HeaderArea, SelectArea, Tabela } from "./style";
+import Image from "next/image";
 
 type FilaType = {
   nome: string,
@@ -22,6 +23,7 @@ type TicketType = {
   sla: string,
   atendimento: string,
   categoria: string,
+  status: string,
   filas: FilaType[]
 }
 
@@ -65,9 +67,37 @@ export default function Home() {
 
   }, []);
 
+  const download_csv = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/exporta_csv/", { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'file.csv'); // ou qualquer outro nome de arquivo que você deseja
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.log("download não funcionou", e);
+    }
+  };
+
+  const [select, isSelect] = useState(false);
+  const [count, isCount] = useState(false);
+  const [countTicket, isCountTicket] = useState(10)
+
+  const altera_select = async () => {
+    if(select == true){
+      isSelect(false);
+    }
+    if(count == true){
+      isCount(false);
+    }
+  }
+
   // Retornando o JSX para renderizar na página.
   return (
-    <>
+    <div onClick={altera_select}>
       <Header pag="TICKETS" />
       <div
         style={{
@@ -76,31 +106,60 @@ export default function Home() {
         }}
       >
         <Navbar />
-        <div>
+        <div style={{margin: "auto", width: "100%", padding: "20px", display: "grid", gap: "20px"}}>
+          <HeaderArea>
+            <CountArea 
+              className={count? "aberto" : "fechado"} 
+              onClick={() => isCount(!count)}
+              value={countTicket}
+              onChange={(e) => isCountTicket(Number(e.target.value))}
+            >
+              <option value={"10"} onClick={() => isCountTicket(10)}>10</option>
+              <option value={"25"} onClick={() => isCountTicket(25)}>25</option>
+              <option value={"50"} onClick={() => isCountTicket(50)}>50</option>
+            </CountArea>
+            <SelectArea className={select? "aberto" : "fechado"} onClick={() => isSelect(!select)}>
+              <option value={"Janeiro"}>Janeiro</option>
+              <option value={"Fevereiro"}>Fevereiro</option>
+              <option value={"Março"}>Março</option>
+            </SelectArea>
+            <DowloadButton onClick={download_csv}>
+              <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path className="hover_color" d="M0.993652 17H15.7178" stroke="#2A71B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path className="hover_color" d="M8.35558 1V13M8.35558 13L12.6501 9.5M8.35558 13L4.06104 9.5" stroke="#2A71B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </DowloadButton>
+          </HeaderArea>
           <Tabela role="grid">
             <thead>
               <tr className="cabeca">
                 <th tabIndex={0} rowSpan={1} colSpan={1}>Ticket</th>
                 <th tabIndex={0} rowSpan={1} colSpan={1}>Site</th>
+                <th tabIndex={0} rowSpan={1} colSpan={1}>Causa</th>
                 <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
+                <th tabIndex={0} rowSpan={1} colSpan={1}>Prioridade</th>
+                <th tabIndex={0} rowSpan={1} colSpan={1}>Status</th>
+                <th tabIndex={0} rowSpan={1} colSpan={1}>Atendimento</th>
               </tr>
             </thead>
             <tbody>
-              {tickets.map(( tick,index) => 
+              {tickets.slice(0, countTicket).map(( tick,index) => 
                 <tr key={index} role="row">
-                  <th>{tick.ticket}</th>
-                  <th>{tick.estacao}</th>
-                  <th>{tick.categoria}</th>
-                  {/* {tick.filas.map(( fila, index2) => 
-                    <div key={index2}>{fila.nome}</div>
-                  )} */}
+                  <td>{tick.ticket}</td>
+                  <td>{tick.estacao}</td>
+                  <td>{tick.descricao}</td>
+                  <td>{tick.categoria}</td>
+                  <td>{tick.prioridade}</td>
+                  <td>{tick.status}</td>
+                  <td>{tick.atendimento}</td>
                 </tr>
               )}
             </tbody>
           </Tabela>
+          <div style={{justifySelf: "end"}}>1 2 3 4 </div>
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 }
