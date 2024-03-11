@@ -47,6 +47,7 @@ export const HeaderArea = styled.div`
   width: 100%;
   display: flex;
   gap: 10px;
+  justify-content: space-between;
 
   
   .fechado{
@@ -65,6 +66,33 @@ export const HeaderArea = styled.div`
     background-position: calc(100% - 8px) 10px;
     background-repeat: no-repeat;
   }
+`;
+
+export const BuscaInput = styled.input`
+  border: 1px #2a71b1 solid;
+  background: transparent;
+  display: flex;
+  padding: 8px;
+  padding-left: 30px;
+  border-radius: 3px;
+  color: #2a71b1;
+  width: 250px;
+
+  ::placeholder {
+    color: #2a71b1;
+  }
+
+  :focus {
+    outline: none;
+  }
+`;
+
+export const QuantidadeTicket = styled.span`
+  text-align: center;
+  color: #2A71B1;
+  font-size: 16px;
+  font-weight: 500;
+  align-self: center;
 `;
 
 export const DowloadButton = styled.button`
@@ -127,6 +155,7 @@ export const CountArea = styled.select`
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  margin-left: 50px;
 
   :focus {
     outline: none;

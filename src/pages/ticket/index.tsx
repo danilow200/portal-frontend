@@ -6,8 +6,9 @@ import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
-import { CountArea, DowloadButton, HeaderArea, NavButton, PagButton, PagContainer, SelectArea, Tabela } from "./style";
+import { BuscaInput, CountArea, DowloadButton, HeaderArea, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, Tabela } from "./style";
 import Image from "next/image";
+import { relative } from "path";
 
 type FilaType = {
   nome: string,
@@ -119,27 +120,46 @@ export default function Home() {
         <Navbar />
         <div style={{margin: "auto", width: "100%", padding: "20px", display: "grid", gap: "20px"}}>
           <HeaderArea>
-            <CountArea 
-              className={count? "aberto" : "fechado"} 
-              onClick={() => isCount(!count)}
-              value={countTicket}
-              onChange={altera_pag_cont}
-            >
-              <option value={"10"} onClick={() => isCountTicket(10)}>10</option>
-              <option value={"25"} onClick={() => isCountTicket(25)}>25</option>
-              <option value={"50"} onClick={() => isCountTicket(50)}>50</option>
-            </CountArea>
-            <SelectArea className={select? "aberto" : "fechado"} onClick={() => isSelect(!select)}>
-              <option value={"Janeiro"}>Janeiro</option>
-              <option value={"Fevereiro"}>Fevereiro</option>
-              <option value={"Março"}>Março</option>
-            </SelectArea>
-            <DowloadButton onClick={download_csv}>
-              <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path className="hover_color" d="M0.993652 17H15.7178" stroke="#2A71B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path className="hover_color" d="M8.35558 1V13M8.35558 13L12.6501 9.5M8.35558 13L4.06104 9.5" stroke="#2A71B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </DowloadButton>
+            <div style={{position: "relative"}}>
+              <BuscaInput id="busca" placeholder="Busca" />
+              <label htmlFor="busca" style={{position: "absolute", top: "10px", left: "8px"}}>
+                <Image src={"/search.png"} width={15}  height={16} alt="busca_icon" />
+              </label>
+            </div>
+            <div style={{display: "flex"}}>
+              <Image src="/Filter.png" width={32} height={40} alt="" />
+              <QuantidadeTicket>FILTRAR</QuantidadeTicket>
+            </div>
+            <div style={{display: "flex", gap: "8px"}}>
+              <QuantidadeTicket>
+                {(countTicket * (pagina + 1)) - countTicket + 1}
+                {(countTicket * (pagina + 1)) > tickets.length && <> até {tickets.length} de </>} 
+                {(countTicket * (pagina + 1)) <= tickets.length && <> até {countTicket * (pagina + 1)} de </>} 
+                {tickets.length} Incidentes
+              </QuantidadeTicket>
+              <CountArea 
+                className={count? "aberto" : "fechado"} 
+                onClick={() => isCount(!count)}
+                value={countTicket}
+                onChange={altera_pag_cont}
+              >
+                <option value={"10"} onClick={() => isCountTicket(10)}>10</option>
+                <option value={"25"} onClick={() => isCountTicket(25)}>25</option>
+                <option value={"50"} onClick={() => isCountTicket(50)}>50</option>
+              </CountArea>
+              <SelectArea className={select? "aberto" : "fechado"} onClick={() => isSelect(!select)}>
+                <option value={"Janeiro"}>Janeiro</option>
+                <option value={"Fevereiro"}>Fevereiro</option>
+                <option value={"Março"}>Março</option>
+              </SelectArea>
+              <DowloadButton onClick={download_csv}>
+                <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path className="hover_color" d="M0.993652 17H15.7178" stroke="#2A71B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path className="hover_color" d="M8.35558 1V13M8.35558 13L12.6501 9.5M8.35558 13L4.06104 9.5" stroke="#2A71B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </DowloadButton>
+            </div>
+            
           </HeaderArea>
           <Tabela role="grid">
             <thead>
