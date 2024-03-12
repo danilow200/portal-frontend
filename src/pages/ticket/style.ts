@@ -8,7 +8,7 @@ export const Tabela = styled.table`
   font-family: "Inter", sans-serif;
   min-width: 1000px;
   width: 100%;
-  height: 600px;
+  height: 500px;
   max-height: 600px;
   overflow: auto;
   display:block;
@@ -110,6 +110,28 @@ export const DowloadButton = styled.button`
 
   :hover {
     background-color: #2A71B1;
+    
+    .hover_color {
+      stroke: #fff;
+    }
+  }
+`;
+
+export const UploadButton = styled.label`
+  height: 40px;
+  background: #fff;
+  display: flex;
+  padding: 10px;
+  padding-left: 30px;
+  border: #2A71B1 2px solid;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: ease-in-out 200ms;
+  color: #2A71B1;
+
+  :hover {
+    background-color: #2A71B1;
+    color: #fff;
     
     .hover_color {
       stroke: #fff;

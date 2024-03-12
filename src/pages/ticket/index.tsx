@@ -1,12 +1,12 @@
 // Importando as funções 'useEffect' e 'useState' do React.
 // 'useEffect' é usado para executar efeitos colaterais em componentes funcionais.
 // 'useState' é um hook que permite adicionar o estado do React a componentes funcionais.
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
-import { BuscaInput, CountArea, DowloadButton, HeaderArea, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, Tabela } from "./style";
+import { BuscaInput, CountArea, DowloadButton, HeaderArea, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, Tabela, UploadButton } from "./style";
 import Image from "next/image";
 import { relative } from "path";
 
@@ -27,6 +27,9 @@ type TicketType = {
   status: string,
   filas: FilaType[]
 }
+
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 export default function Home() {
   const [tickets, setTickets] = useState<TicketType[]>([]);
@@ -107,6 +110,37 @@ export default function Home() {
     isPagina(Number(0));
   }
 
+  const [myfile, setMyFile] = useState<File | null>(null);
+
+  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setMyFile(file);
+      console.log(file);
+    }
+  };
+
+  const handleDownload = async () => {
+    const formData = new FormData();
+    if (myfile) {
+      formData.append('myfile', myfile);
+    }
+    console.log(myfile);
+
+  
+    try {
+      const response = await axios.post('http://localhost:8000/Import_Excel_pandas/', formData, {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // Retornando o JSX para renderizar na página.
   return (
     <div onClick={altera_select}>
@@ -119,6 +153,41 @@ export default function Home() {
       >
         <Navbar />
         <div style={{margin: "auto", width: "100%", padding: "20px", display: "grid", gap: "20px"}}>
+          
+          <HeaderArea style={{justifyContent: "start"}}>
+            <SelectArea className={select? "aberto" : "fechado"} onClick={() => isSelect(!select)}>
+              <option value={"Janeiro"}>Janeiro</option>
+              <option value={"Fevereiro"}>Fevereiro</option>
+              <option value={"Março"}>Março</option>
+            </SelectArea>
+            <div style={{position: "relative"}}>
+              <UploadButton htmlFor="upload_csv">
+                <input 
+                  id="upload_csv" 
+                  type="file" 
+                  name="myfile" 
+                  accept=".csv" 
+                  onChange={handleUpload}
+                  style={{display: "none"}} 
+                />
+                <div style={{position: "absolute", top: "10px", left: "8px"}}>
+                  <svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path className="hover_color" d="M13.987 10.7778V4.33203C13.987 4.19058 13.9354 4.05492 13.8433 3.9549L11.2677 1.15621C11.1757 1.05619 11.0509 1 10.9207 1H1.38973C1.11867 1 0.898926 1.23878 0.898926 1.53333V18.2444C0.898926 18.539 1.11867 18.7778 1.38973 18.7778H9.079" stroke="#2A71B1" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path className="hover_color" d="M10.7153 1V4.02222C10.7153 4.31677 10.935 4.55556 11.2061 4.55556H13.9874" stroke="#2A71B1" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path className="hover_color" d="M10.7153 16.1111H15.6234M15.6234 16.1111L13.1694 13.4445M15.6234 16.1111L13.1694 18.7778" stroke="#2A71B1" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                {myfile === null ? "importar" : myfile.name}
+              </UploadButton>
+            </div>
+            <DowloadButton onClick={handleDownload}>
+              <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path className="hover_color" d="M1.20703 1H15.9312" stroke="#2A71B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path className="hover_color" d="M8.56895 17V5M8.56895 5L12.8635 8.5M8.56895 5L4.27441 8.5" stroke="#2A71B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </DowloadButton>
+          </HeaderArea>
+
           <HeaderArea>
             <div style={{position: "relative"}}>
               <BuscaInput id="busca" placeholder="Busca" />
