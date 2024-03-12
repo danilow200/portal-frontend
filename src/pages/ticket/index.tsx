@@ -261,8 +261,8 @@ export default function Home() {
               <NavButton onClick={() => isPagina(pagina -1)}>&lt;</NavButton>
             }
             {paginas.map((pagNu, index) => {
-                if (index < 4) {
-                    // Renderiza os quatro primeiros números
+                if (pagNu >= pagina - 1 && pagNu <= pagina + 3) {
+                    // Renderiza os números ao redor da página atual
                     return (
                         <PagButton
                             onClick={() => isPagina(pagNu - 1)}
@@ -272,11 +272,11 @@ export default function Home() {
                             {pagNu}
                         </PagButton>
                     );
-                } else if (index === 4) {
-                    // Renderiza "..." após os quatro primeiros números
-                    return <span key="ellipsis">...</span>;
-                } else if (index === paginas.length - 1) {
-                    // Renderiza o último número
+                } else if (pagNu === pagina + 4 || pagNu === pagina - 2) {
+                    // Renderiza "..." antes e depois dos números ao redor da página atual
+                    return <span key={`ellipsis${pagNu}`}>...</span>;
+                } else if (pagNu === 1 || pagNu === paginas.length) {
+                    // Renderiza o primeiro e último número
                     return (
                         <PagButton
                             onClick={() => isPagina(pagNu - 1)}
