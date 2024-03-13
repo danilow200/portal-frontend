@@ -227,3 +227,17 @@ export const NavButton = styled.button`
   font-size: 16px;
   font-weight: 700;
 `;
+
+export const SemTicketMessagem = styled.div`
+  font-family: "Inter", sans-serif;
+  min-width: 1000px;
+  width: 100%;
+  height: 500px;
+  max-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  font-weight: 700;
+  color: #2a71b1;
+`;

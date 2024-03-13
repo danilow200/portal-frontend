@@ -71,7 +71,7 @@ export const Navbar = () => {
                 transition: "ease-in-out 200ms"
             }} />
             {navlink.map((index) => 
-                <NavA key={index.link} href={index.link}>
+                <NavA key={index.name} href={index.link}>
                     <img src={index.icon} style={{pointerEvents: "all"}} />
                     <span style={{
                         opacity: aberto ? 1 : 0,

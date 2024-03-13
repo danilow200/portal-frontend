@@ -1542,6 +1542,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clsx@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "clsx@npm:2.1.0"
+  checksum: 43fefc29b6b49c9476fbce4f8b1cc75c27b67747738e598e6651dd40d63692135dc60b18fa1c5b78a2a9ba8ae6fd2055a068924b94e20b42039bd53b78b98e1d
+  languageName: node
+  linkType: hard
+
 "codepage@npm:~1.13.0":
   version: 1.13.1
   resolution: "codepage@npm:1.13.1"
@@ -4477,6 +4484,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-toastify@npm:^10.0.4":
+  version: 10.0.4
+  resolution: "react-toastify@npm:10.0.4"
+  dependencies:
+    clsx: ^2.1.0
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: fea1b6924f8f15cd2b5d27df0d1a4aec40321080d00fb12188d9fb14f7249554bad591da0a500024424685bc81576a6b04e4190b2a4e9b3f9054c73fff25db6a
+  languageName: node
+  linkType: hard
+
 "react-transition-group@npm:2.9.0":
   version: 2.9.0
   resolution: "react-transition-group@npm:2.9.0"
@@ -5070,6 +5089,7 @@ __metadata:
     react-device-detect: ^2.2.3
     react-dom: 18.2.0
     react-google-charts: ^4.0.0
+    react-toastify: ^10.0.4
     recharts: ^2.7.2
     styled-components: ^5.3.6
     typescript: 4.9.3

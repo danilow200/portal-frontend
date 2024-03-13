@@ -6,9 +6,11 @@ import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
-import { BuscaInput, CountArea, DowloadButton, HeaderArea, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, Tabela, UploadButton } from "./style";
+import { BuscaInput, CountArea, DowloadButton, HeaderArea, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, SemTicketMessagem, Tabela, UploadButton } from "./style";
 import Image from "next/image";
 import { relative } from "path";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type FilaType = {
   nome: string,
@@ -38,6 +40,16 @@ export default function Home() {
   const [countTicket, isCountTicket] = useState(10);
   const [pagina, isPagina] = useState(0);
 
+  const atualiza_ticket = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/get_tickets/");
+      console.log(response.data);
+      setTickets(response.data)
+    } catch (error) {
+      console.error(`Erro ao buscar tickets: ${error}`);
+    }
+  }
+
   // Usando 'useEffect' para executar o código dentro da função quando o componente é montado.
   useEffect(() => {
     // Verificando se o token de acesso existe no armazenamento local.
@@ -63,16 +75,7 @@ export default function Home() {
 
     }
 
-    (async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/get_tickets/");
-        console.log(response.data);
-        setTickets(response.data)
-      } catch (error) {
-        console.error(`Erro ao buscar tickets: ${error}`);
-      }
-    })();
-
+    (atualiza_ticket)();
   }, []);
 
   const download_csv = async () => {
@@ -126,16 +129,40 @@ export default function Home() {
       formData.append('myfile', myfile);
     }
     console.log(myfile);
-
+  
+    const postRequest = axios.post('http://localhost:8000/Import_Excel_pandas/', formData, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+  
+    toast.promise(
+      postRequest,
+      {
+        pending: 'Carregando...',
+        success: 'Tickets carregados com sucesso',
+        error: 'Ocorreu um erro.'
+      }, 
+      {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      }
+    );
   
     try {
-      const response = await axios.post('http://localhost:8000/Import_Excel_pandas/', formData, {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      });
-      console.log(response.data);
+      const response = await postRequest;
+  
+      if (response.data.message === 'Todas as operações de banco de dados foram concluídas.') {
+        atualiza_ticket();
+      }
+  
     } catch (error) {
       console.error(error);
     }
@@ -153,7 +180,7 @@ export default function Home() {
       >
         <Navbar />
         <div style={{margin: "auto", width: "100%", padding: "20px", display: "grid", gap: "20px"}}>
-          
+        <ToastContainer />
           <HeaderArea style={{justifyContent: "start"}}>
             <SelectArea className={select? "aberto" : "fechado"} onClick={() => isSelect(!select)}>
               <option value={"Janeiro"}>Janeiro</option>
@@ -230,32 +257,36 @@ export default function Home() {
             </div>
             
           </HeaderArea>
-          <Tabela role="grid">
-            <thead>
-              <tr className="cabeca">
-                <th tabIndex={0} rowSpan={1} colSpan={1}>Ticket</th>
-                <th tabIndex={0} rowSpan={1} colSpan={1}>Site</th>
-                <th tabIndex={0} rowSpan={1} colSpan={1}>Causa</th>
-                <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
-                <th tabIndex={0} rowSpan={1} colSpan={1}>Prioridade</th>
-                <th tabIndex={0} rowSpan={1} colSpan={1}>Status</th>
-                <th tabIndex={0} rowSpan={1} colSpan={1}>Atendimento</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tickets.slice(pagina * countTicket, countTicket * (pagina + 1)).map(( tick,index) => 
-                <tr key={index} role="row">
-                  <td>{tick.ticket}</td>
-                  <td>{tick.estacao}</td>
-                  <td>{tick.descricao}</td>
-                  <td>{tick.categoria}</td>
-                  <td>{tick.prioridade}</td>
-                  <td>{tick.status}</td>
-                  <td>{tick.atendimento}</td>
+          {tickets.length != 0 && 
+            <Tabela role="grid">
+              <thead>
+                <tr className="cabeca">
+                  <th tabIndex={0} rowSpan={1} colSpan={1}>Ticket</th>
+                  <th tabIndex={0} rowSpan={1} colSpan={1}>Site</th>
+                  <th tabIndex={0} rowSpan={1} colSpan={1}>Causa</th>
+                  <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
+                  <th tabIndex={0} rowSpan={1} colSpan={1}>Prioridade</th>
+                  <th tabIndex={0} rowSpan={1} colSpan={1}>Status</th>
+                  <th tabIndex={0} rowSpan={1} colSpan={1}>Atendimento</th>
                 </tr>
-              )}
-            </tbody>
-          </Tabela>
+              </thead>
+              <tbody>
+                {tickets.slice(pagina * countTicket, countTicket * (pagina + 1)).map(( tick,index) => 
+                  <tr key={tick.ticket} role="row">
+                    <td>{tick.ticket}</td>
+                    <td>{tick.estacao}</td>
+                    <td>{tick.descricao}</td>
+                    <td>{tick.categoria}</td>
+                    <td>{tick.prioridade}</td>
+                    <td>{tick.status}</td>
+                    <td>{tick.atendimento}</td>
+                  </tr>
+                )}
+              </tbody>
+            </Tabela>
+          }
+          {tickets.length === 0 && <SemTicketMessagem>Sem Tickets</SemTicketMessagem>}
+          
           <PagContainer>
             {pagina > 0 && 
               <NavButton onClick={() => isPagina(pagina -1)}>&lt;</NavButton>
