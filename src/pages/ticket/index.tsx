@@ -24,7 +24,10 @@ type TicketType = {
   descricao: string,
   prioridade: number,
   sla: string,
+  inicio: string,
+  fim: string,
   atendimento: string,
+  mes: string,
   categoria: string,
   status: string,
   filas: FilaType[]
@@ -39,10 +42,11 @@ export default function Home() {
   const [count, isCount] = useState(false);
   const [countTicket, isCountTicket] = useState(10);
   const [pagina, isPagina] = useState(0);
+  const [mes, isMes] = useState("Março%20-%202024")
 
   const atualiza_ticket = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/get_tickets/");
+      const response = await axios.get(`http://localhost:8000/get_tickets/?mes_atendimento=${(mes)}`);
       console.log(response.data);
       setTickets(response.data)
     } catch (error) {
@@ -74,9 +78,18 @@ export default function Home() {
       })();
 
     }
+    const atualiza_ticket = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/get_tickets/?mes_atendimento=${(mes)}`);
+        console.log(response.data);
+        setTickets(response.data)
+      } catch (error) {
+        console.error(`Erro ao buscar tickets: ${error}`);
+      }
+    }
 
     (atualiza_ticket)();
-  }, []);
+  }, [mes]);
 
   const download_csv = async () => {
     try {
@@ -111,6 +124,11 @@ export default function Home() {
   const altera_pag_cont = async (e: { target: { value: any; }; }) =>{
     isCountTicket(Number(e.target.value));
     isPagina(Number(0));
+  }
+
+  const altera_mes = async(e: { target: { value: any; }; }) =>{
+    console.log(String(e.target.value));
+    isMes(String(e.target.value));
   }
 
   const [myfile, setMyFile] = useState<File | null>(null);
@@ -182,10 +200,14 @@ export default function Home() {
         <div style={{margin: "auto", width: "100%", padding: "20px", display: "grid", gap: "20px"}}>
         <ToastContainer />
           <HeaderArea style={{justifyContent: "start"}}>
-            <SelectArea className={select? "aberto" : "fechado"} onClick={() => isSelect(!select)}>
-              <option value={"Janeiro"}>Janeiro</option>
-              <option value={"Fevereiro"}>Fevereiro</option>
-              <option value={"Março"}>Março</option>
+            <SelectArea 
+              className={select? "aberto" : "fechado"} 
+              onClick={() => isSelect(!select)}
+              onChange={altera_mes}
+            >
+              <option value={"Janeiro%20-%202024"}>Janeiro - 2024</option>
+              <option value={"Fevereiro%20-%202024"}>Fevereiro - 2024</option>
+              <option selected value={"Março%20-%202024"}>Março - 2024</option>
             </SelectArea>
             <div style={{position: "relative"}}>
               <UploadButton htmlFor="upload_csv">
@@ -267,7 +289,8 @@ export default function Home() {
                   <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
                   <th tabIndex={0} rowSpan={1} colSpan={1}>Prioridade</th>
                   <th tabIndex={0} rowSpan={1} colSpan={1}>Status</th>
-                  <th tabIndex={0} rowSpan={1} colSpan={1}>Atendimento</th>
+                  <th tabIndex={0} rowSpan={1} colSpan={1}>Inicio</th>
+                  <th tabIndex={0} rowSpan={1} colSpan={1}>Fim</th>
                 </tr>
               </thead>
               <tbody>
@@ -279,7 +302,8 @@ export default function Home() {
                     <td>{tick.categoria}</td>
                     <td>{tick.prioridade}</td>
                     <td>{tick.status}</td>
-                    <td>{tick.atendimento}</td>
+                    <td>{tick.inicio}</td>
+                    <td>{tick.fim}</td>
                   </tr>
                 )}
               </tbody>
