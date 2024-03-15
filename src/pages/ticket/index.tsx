@@ -186,6 +186,26 @@ export default function Home() {
     }
   };
 
+  function updateTicket(ticketId: any, updatedData: any) {
+    const data2 = new URLSearchParams(updatedData);
+    axios.post(`http://localhost:8000/update_ticket/${ticketId}/`, data2)
+        .then(response => {
+            console.log(response.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+function deleteTicket(ticketId: any) {
+  axios.delete(`http://localhost:8000/delete_ticket/${ticketId}/`)
+      .then(response => {
+          console.log(response.data);
+      })
+      .catch(error => {
+          console.error(error);
+      });
+}
   // Retornando o JSX para renderizar na página.
   return (
     <div onClick={altera_select}>
