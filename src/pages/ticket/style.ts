@@ -41,6 +41,11 @@ export const Tabela = styled.table`
   tr:nth-child(odd){
     background-color: #F9F9F9;
   }
+
+  .ticket {
+    color: blue;
+    cursor: pointer;
+  }
 `;
 
 export const HeaderArea = styled.div`
@@ -212,6 +217,7 @@ export const PagButton = styled.button<PageProps>`
   color: ${props => props.ativo ? "#FFF" : "#2a71b1"};
   cursor: pointer;
   filter: drop-shadow(0 4px 4px rgba(0,0,0,.25));
+  z-index: 1;
 `;
 
 export const NavButton = styled.button`

@@ -4427,13 +4427,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-google-charts@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "react-google-charts@npm:4.0.0"
+"react-google-charts@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "react-google-charts@npm:4.0.1"
   peerDependencies:
     react: ">=16.3.0"
     react-dom: ">=16.3.0"
-  checksum: 7bd258523b03badef5c269cae1c854b5a971c589ceea4b9a626f8c59f421f5c569e95096cc4024d492a04b248e3f910dc7c34c6f52c2424dbe32980f651014a8
+  checksum: 874a552b07cc67d6b830718dd5e71055c46fbd0c7a12bca14078c0744111d8fead833e36a16bd0b0ea5c26f6cff0eb84b4b6de62845c945b3c47c6cc75233f9d
   languageName: node
   linkType: hard
 
@@ -5088,7 +5088,7 @@ __metadata:
     react-chartkick: ^0.5.3
     react-device-detect: ^2.2.3
     react-dom: 18.2.0
-    react-google-charts: ^4.0.0
+    react-google-charts: ^4.0.1
     react-toastify: ^10.0.4
     recharts: ^2.7.2
     styled-components: ^5.3.6

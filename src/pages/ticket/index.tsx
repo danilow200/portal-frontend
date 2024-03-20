@@ -11,11 +11,18 @@ import Image from "next/image";
 import { relative } from "path";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { TicketModal } from "../../components/TicketModal";
 
 type FilaType = {
   nome: string,
   entrada: string,
   saida: string
+}
+
+type DescontoType = {
+  inicio: string,
+  fim: string,
+  aplicado: boolean
 }
 
 type TicketType = {
@@ -30,7 +37,8 @@ type TicketType = {
   mes: string,
   categoria: string,
   status: string,
-  filas: FilaType[]
+  filas: FilaType[],
+  descontos: DescontoType[],
 }
 
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -42,11 +50,16 @@ export default function Home() {
   const [count, isCount] = useState(false);
   const [countTicket, isCountTicket] = useState(10);
   const [pagina, isPagina] = useState(0);
-  const [mes, isMes] = useState("Março%20-%202024")
+  const [mes, isMes] = useState("Março%20-%202024");
+  const [selectTicket, isSelectTicket] = useState(1);
 
   const atualiza_ticket = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/get_tickets/?mes_atendimento=${(mes)}`);
+      const response = await axios.get(`http://localhost:8000/get_tickets/?mes_atendimento=${(mes)}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       console.log(response.data);
       setTickets(response.data)
     } catch (error) {
@@ -316,7 +329,7 @@ function deleteTicket(ticketId: any) {
               <tbody>
                 {tickets.slice(pagina * countTicket, countTicket * (pagina + 1)).map(( tick,index) => 
                   <tr key={tick.ticket} role="row">
-                    <td>{tick.ticket}</td>
+                    <td className="ticket" onClick={() => isSelectTicket(tick.ticket)}>{tick.ticket}</td>
                     <td>{tick.estacao}</td>
                     <td>{tick.descricao}</td>
                     <td>{tick.categoria}</td>
@@ -324,6 +337,7 @@ function deleteTicket(ticketId: any) {
                     <td>{tick.status}</td>
                     <td>{tick.inicio}</td>
                     <td>{tick.fim}</td>
+                    {tick.ticket == selectTicket && <div onClick={() => isSelectTicket(1)} style={{width: "100%", height: "100%", position: "absolute", top: "0", left: "0", display: "flex", margin: "auto", justifyContent: "center", alignItems: "center", background: "rgba(255,255,255, 0)", backdropFilter: "blur(5px)", zIndex: "999"}}> <TicketModal ticketData={tick} /></div>}
                   </tr>
                 )}
               </tbody>
