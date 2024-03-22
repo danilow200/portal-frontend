@@ -62,6 +62,22 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
     row.push([fila.nome, "", entrada, saida]);
 }
 
+  row.sort((a, b) => {
+    if (a[2] instanceof Date && b[2] instanceof Date) {
+      return a[2].getTime() - b[2].getTime();
+    }
+    return 0;
+  });
+
+  for (let i = 0; i < props.ticketData.descontos.length; i++) {
+    let desconto = props.ticketData.descontos[i];
+    let entrada = new Date(desconto.inicio);
+    entrada.setHours(entrada.getHours() + 3);
+    let saida = new Date(desconto.fim);
+    saida.setHours(saida.getHours() + 3);
+    row.push(["Descontos", "", entrada, saida]);
+}
+
   console.log(row);
 
   const data = [columns, ...row];
@@ -114,9 +130,9 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
         height="400px"
         options={timeline_options}
       />
-      {props.ticketData.descontos.map((desconto, index) => 
+      {/* {props.ticketData.descontos.map((desconto, index) => 
         <div style={{color: "#000"}} key={index}>{desconto.inicio}</div>
-      )}
+      )} */}
     </Container>
   );
 };

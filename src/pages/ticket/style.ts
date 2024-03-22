@@ -14,7 +14,7 @@ export const Tabela = styled.table`
   display:block;
   margin: 0 auto;
   clear: both;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
   font-size: 0.9em;
   border-bottom: 1px solid #a6c9e2;
@@ -25,9 +25,18 @@ export const Tabela = styled.table`
   .cabeca {
     background-color: #fff !important;
     width: 100%;
-    border-bottom: 1px solid #a6c9e2;
+    border-bottom: 1px solid #a6c9e2 !important;
     font-weight: 700;
-    font-size: 12;
+    font-size: 16px;
+  }
+
+  .sort {
+    cursor: pointer;
+    transition: ease-in-out 200ms;
+
+    :hover {
+      color: #2a71b1;
+    }
   }
 
   tr{
@@ -246,4 +255,29 @@ export const SemTicketMessagem = styled.div`
   font-size: 42px;
   font-weight: 700;
   color: #2a71b1;
+`;
+
+export const ModalContainer = styled.div`
+    width: 100%;
+    height: 100%; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255, 0);
+    backdrop-filter: blur(5px); 
+    z-index: 999;
+    gap: 10px;
+
+    .X-no-peito {
+        font-size: 52px;
+        font-weight: 700;
+        color: #2a71b1;
+        align-self: flex-start;
+        margin-top: 80px;
+        cursor: pointer;
+    }
 `;

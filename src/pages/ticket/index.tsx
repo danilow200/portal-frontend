@@ -6,7 +6,7 @@ import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
-import { BuscaInput, CountArea, DowloadButton, HeaderArea, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, SemTicketMessagem, Tabela, UploadButton } from "./style";
+import { BuscaInput, CountArea, DowloadButton, HeaderArea, ModalContainer, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, SemTicketMessagem, Tabela, UploadButton } from "./style";
 import Image from "next/image";
 import { relative } from "path";
 import { ToastContainer, toast } from 'react-toastify';
@@ -52,6 +52,9 @@ export default function Home() {
   const [pagina, isPagina] = useState(0);
   const [mes, isMes] = useState("Março%20-%202024");
   const [selectTicket, isSelectTicket] = useState(1);
+  const [primeira_exec, isPrimeiraExec] = useState(0);
+  const [isAscending, setIsAscending] = useState(true);
+  const [sortField, setSortField] = useState('');
 
   const atualiza_ticket = async () => {
     try {
@@ -101,8 +104,11 @@ export default function Home() {
       }
     }
 
-    (atualiza_ticket)();
-  }, [mes]);
+    if (primeira_exec == 0){
+      (atualiza_ticket)();
+      isPrimeiraExec(1);
+    };
+  }, [mes, primeira_exec]);
 
   const download_csv = async () => {
     try {
@@ -219,6 +225,24 @@ function deleteTicket(ticketId: any) {
           console.error(error);
       });
 }
+
+function sortTicket(field: keyof TicketType){
+  setSortField(field);
+  const sortedTickets = [...tickets].sort((a: TicketType, b: TicketType) => {
+    let valueA: number = 0, valueB: number = 0;
+    if (field === 'inicio' || field === 'fim') {
+      valueA = new Date(a[field]).getTime();
+      valueB = new Date(b[field]).getTime();
+    } else if (field === 'ticket') {
+      valueA = a[field];
+      valueB = b[field];
+    }
+    return isAscending ? valueA - valueB : valueB - valueA;
+  });
+
+  setTickets(sortedTickets);
+  setIsAscending(!isAscending); // inverte a direção para a próxima vez que sortTicket for chamada
+}
   // Retornando o JSX para renderizar na página.
   return (
     <div onClick={altera_select}>
@@ -316,14 +340,14 @@ function deleteTicket(ticketId: any) {
             <Tabela role="grid">
               <thead>
                 <tr className="cabeca">
-                  <th tabIndex={0} rowSpan={1} colSpan={1}>Ticket</th>
+                  <th className="sort" tabIndex={0} rowSpan={1} colSpan={1} onClick={() => sortTicket('ticket')}>Ticket {sortField == 'ticket' && isAscending && <>&#8595;</>}{sortField == 'ticket' && !isAscending && <>&#8593;</>}</th>
                   <th tabIndex={0} rowSpan={1} colSpan={1}>Site</th>
                   <th tabIndex={0} rowSpan={1} colSpan={1}>Causa</th>
                   <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
                   <th tabIndex={0} rowSpan={1} colSpan={1}>Prioridade</th>
                   <th tabIndex={0} rowSpan={1} colSpan={1}>Status</th>
-                  <th tabIndex={0} rowSpan={1} colSpan={1}>Inicio</th>
-                  <th tabIndex={0} rowSpan={1} colSpan={1}>Fim</th>
+                  <th className="sort" tabIndex={0} rowSpan={1} colSpan={1} onClick={() => sortTicket('inicio')}>Inicio {sortField == 'inicio' && isAscending && <>&#8595;</>}{sortField == 'inicio' && !isAscending && <>&#8593;</>}</th>
+                  <th className="sort" tabIndex={0} rowSpan={1} colSpan={1} onClick={() => sortTicket('fim')}>Fim {sortField == 'fim' && isAscending && <>&#8595;</>}{sortField == 'fim' && !isAscending && <>&#8593;</>}</th>
                 </tr>
               </thead>
               <tbody>
@@ -337,7 +361,12 @@ function deleteTicket(ticketId: any) {
                     <td>{tick.status}</td>
                     <td>{tick.inicio}</td>
                     <td>{tick.fim}</td>
-                    {tick.ticket == selectTicket && <div onClick={() => isSelectTicket(1)} style={{width: "100%", height: "100%", position: "absolute", top: "0", left: "0", display: "flex", margin: "auto", justifyContent: "center", alignItems: "center", background: "rgba(255,255,255, 0)", backdropFilter: "blur(5px)", zIndex: "999"}}> <TicketModal ticketData={tick} /></div>}
+                    {tick.ticket == selectTicket && 
+                      <ModalContainer>
+                        <TicketModal ticketData={tick} />
+                        <span className="X-no-peito"  onClick={() => isSelectTicket(1)}>X</span>
+                      </ModalContainer>
+                    }
                   </tr>
                 )}
               </tbody>
