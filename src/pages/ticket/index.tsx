@@ -52,7 +52,6 @@ export default function Home() {
   const [pagina, isPagina] = useState(0);
   const [mes, isMes] = useState("Março%20-%202024");
   const [selectTicket, isSelectTicket] = useState(1);
-  const [primeira_exec, isPrimeiraExec] = useState(0);
   const [isAscending, setIsAscending] = useState(true);
   const [sortField, setSortField] = useState('');
 
@@ -93,22 +92,8 @@ export default function Home() {
         }
       })();
 
-    }
-    const atualiza_ticket = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8000/get_tickets/?mes_atendimento=${(mes)}`);
-        console.log(response.data);
-        setTickets(response.data)
-      } catch (error) {
-        console.error(`Erro ao buscar tickets: ${error}`);
-      }
-    }
-
-    if (primeira_exec == 0){
-      (atualiza_ticket)();
-      isPrimeiraExec(1);
-    };
-  }, [mes, primeira_exec]);
+    (atualiza_ticket)();
+  }}, [mes]);
 
   const download_csv = async () => {
     try {
@@ -231,9 +216,14 @@ function sortTicket(field: keyof TicketType){
   const sortedTickets = [...tickets].sort((a: TicketType, b: TicketType) => {
     let valueA: number = 0, valueB: number = 0;
     if (field === 'inicio' || field === 'fim') {
-      valueA = new Date(a[field]).getTime();
-      valueB = new Date(b[field]).getTime();
-    } else if (field === 'ticket') {
+      const [date, time] = a[field].split(" ");
+      const [day, month, year] = date.split("/");
+      valueA = new Date(`${month}/${day}/${year} ${time}`).getTime();
+      
+      const [dateB, timeB] = b[field].split(" ");
+      const [dayB, monthB, yearB] = dateB.split("/");
+      valueB = new Date(`${monthB}/${dayB}/${yearB} ${timeB}`).getTime();
+    }  else if (field === 'ticket') {
       valueA = a[field];
       valueB = b[field];
     }
