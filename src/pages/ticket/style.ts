@@ -281,3 +281,38 @@ export const ModalContainer = styled.div`
         cursor: pointer;
     }
 `;
+
+export const FilterModal = styled.div`
+  grid-template-columns: 1fr 1fr;
+  position: absolute;
+  width: 400px;
+  background: #FFF;
+  top: 50px;
+  padding: 10px;
+  line-height: 1cm;
+  border: 1px solid #2a71b1;
+  border-radius: 5px;
+  box-shadow: 0 4px 4px rgba(0,0,0,.25);
+
+  span {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  button {
+    align-self: flex-end;
+    background: white;
+    color: #2a71b1;
+    border: 1px solid #2a71b1;
+    border-radius: 25px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: ease-in-out 200ms;
+    font-size: 16px;
+
+    :hover {
+      background: #2a71b1;
+      color: white;
+    }
+  }
+`;
