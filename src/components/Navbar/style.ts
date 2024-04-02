@@ -8,7 +8,7 @@ export const Container = styled.div<ContainerProps>`
   background-color: #28478E;
   display: grid;
   width: ${props => props.estado ? "330px" : "90px"};
-  min-height: 770px;
+  min-height: 755px;
   height: 100%;
   align-items: center;
   gap: 12px;
