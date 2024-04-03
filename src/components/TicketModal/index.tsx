@@ -1,4 +1,4 @@
-import { Container, InfoCard } from "./style";
+import { Container, InfoCard, Tabela, TituloCard } from "./style";
 import { Chart } from "react-google-charts";
 
 type FilaType = {
@@ -8,8 +8,13 @@ type FilaType = {
 }
 
 type DescontoType = {
+  ticket: number,
+  estacao: string,
   inicio: string,
   fim: string,
+  total: string,
+  auditor: string,
+  categoria: string,
   aplicado: boolean
 }
 
@@ -127,12 +132,34 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
         chartType="Timeline"
         data={data}
         width="100%"
-        height="400px"
+        height="300px"
         options={timeline_options}
       />
-      {/* {props.ticketData.descontos.map((desconto, index) => 
-        <div style={{color: "#000"}} key={index}>{desconto.inicio}</div>
-      )} */}
+      <TituloCard>Descontos</TituloCard>
+      <Tabela role="grid">
+        <thead>
+          <tr className="cabeca">
+          <th className="sort" tabIndex={0} rowSpan={1} colSpan={1}>Inicio</th>
+            <th className="sort" tabIndex={0} rowSpan={1} colSpan={1}>Fim</th>
+            <th tabIndex={0} rowSpan={1} colSpan={1}>Tempo Total</th>
+            <th tabIndex={0} rowSpan={1} colSpan={1}>Auditor</th>
+            <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
+            <th tabIndex={0} rowSpan={1} colSpan={1}>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.ticketData.descontos.map((desconto, index) => 
+            <tr key={index} role="row">
+              <td>{desconto.inicio}</td>
+              <td>{desconto.fim}</td>
+              <td>{desconto.total}</td>
+              <td>{desconto.auditor}</td>
+              <td><span className="categoria">{desconto.categoria}</span></td>
+              <td>{desconto.aplicado && <span className="aprovado">APROVADO</span>}</td>
+            </tr>
+          )}
+        </tbody>
+      </Tabela>
     </Container>
   );
 };

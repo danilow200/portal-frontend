@@ -20,8 +20,13 @@ type FilaType = {
 }
 
 type DescontoType = {
+  ticket: number,
+  estacao: string,
   inicio: string,
   fim: string,
+  total: string,
+  auditor: string,
+  categoria: string,
   aplicado: boolean
 }
 
@@ -287,7 +292,7 @@ function deleteTicket(ticketId: any) {
 
   // Retornando o JSX para renderizar na página.
   return (
-    <div onClick={altera_select}>
+    <div onClick={altera_select} style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
       <Header pag="TICKETS" />
       <div
         style={{
@@ -299,16 +304,6 @@ function deleteTicket(ticketId: any) {
         <div style={{margin: "auto", width: "100%", padding: "20px", display: "grid", gap: "20px"}}>
         <ToastContainer />
           <HeaderArea style={{justifyContent: "start"}}>
-            <SelectArea 
-              className={select? "aberto" : "fechado"} 
-              onClick={() => isSelect(!select)}
-              onChange={altera_mes}
-              defaultValue={"Março - 2024"}
-            >
-              <option value={"Janeiro - 2024"}>Janeiro - 2024</option>
-              <option value={"Fevereiro - 2024"}>Fevereiro - 2024</option>
-              <option value={"Março - 2024"}>Março - 2024</option>
-            </SelectArea>
             <div style={{position: "relative"}}>
               <UploadButton htmlFor="upload_csv">
                 <input 
@@ -409,10 +404,15 @@ function deleteTicket(ticketId: any) {
                 <option value={"25"} onClick={() => isCountTicket(25)}>25</option>
                 <option value={"50"} onClick={() => isCountTicket(50)}>50</option>
               </CountArea>
-              <SelectArea className={select? "aberto" : "fechado"} onClick={() => isSelect(!select)}>
-                <option value={"Janeiro"}>Janeiro</option>
-                <option value={"Fevereiro"}>Fevereiro</option>
-                <option value={"Março"}>Março</option>
+              <SelectArea 
+                className={select? "aberto" : "fechado"} 
+                onClick={() => isSelect(!select)}
+                onChange={altera_mes}
+                defaultValue={"Março - 2024"}
+              >
+                <option value={"Janeiro - 2024"}>Janeiro - 2024</option>
+                <option value={"Fevereiro - 2024"}>Fevereiro - 2024</option>
+                <option value={"Março - 2024"}>Março - 2024</option>
               </SelectArea>
               <DowloadButton onClick={download_csv}>
                 <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -443,7 +443,7 @@ function deleteTicket(ticketId: any) {
                     <td className="ticket" onClick={() => isSelectTicket(tick.ticket)}>{tick.ticket}</td>
                     <td>{tick.estacao}</td>
                     <td>{tick.descricao}</td>
-                    <td>{tick.categoria}</td>
+                    <td><span className="categoria">{tick.categoria}</span></td>
                     <td>{tick.prioridade}</td>
                     <td>{tick.status}</td>
                     <td>{tick.inicio}</td>

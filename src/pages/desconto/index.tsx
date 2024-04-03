@@ -200,7 +200,7 @@ export default function Home() {
 
   // Retornando o JSX para renderizar na página.
   return (
-    <div onClick={altera_select}>
+    <div onClick={altera_select} style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
       <Header pag="DESCONTOS" />
       <div
         style={{
@@ -314,8 +314,8 @@ export default function Home() {
                   <tr key={tick.ticket} role="row">
                     <td className="ticket" onClick={() => busca_ticket(tick.ticket)}>{tick.ticket}</td>
                     <td>{tick.estacao}</td>
-                    <td>{tick.categoria}</td>
-                    <td>{tick.aplicado && <>APROVADO</>}</td>
+                    <td><span className="categoria">{tick.categoria}</span></td>
+                    <td>{tick.aplicado && <span className="aprovado">APROVADO</span>}</td>
                     <td>{tick.inicio}</td>
                     <td>{tick.fim}</td>
                     <td>{tick.total}</td>

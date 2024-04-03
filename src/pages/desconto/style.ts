@@ -55,6 +55,23 @@ export const Tabela = styled.table`
     color: blue;
     cursor: pointer;
   }
+
+  .categoria {
+    text-align: center;
+    padding: 4px 8px;
+    background: #0D3080;
+    border-radius: 18px;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  .aprovado {
+    text-align: center;
+    padding: 4px 8px;
+    background: #5f8118;
+    border-radius: 18px;
+    color: #fff;
+  }
 `;
 
 export const HeaderArea = styled.div`

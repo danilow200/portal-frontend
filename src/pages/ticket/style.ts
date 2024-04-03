@@ -9,7 +9,7 @@ export const Tabela = styled.table`
   min-width: 1000px;
   width: 100%;
   height: 500px;
-  max-height: 600px;
+  max-height: 500px;
   overflow: auto;
   display:block;
   margin: 0 auto;
@@ -54,6 +54,15 @@ export const Tabela = styled.table`
   .ticket {
     color: blue;
     cursor: pointer;
+  }
+
+  .categoria {
+    text-align: center;
+    padding: 4px 8px;
+    background: #0D3080;
+    border-radius: 18px;
+    color: #fff;
+    text-transform: uppercase;
   }
 `;
 
