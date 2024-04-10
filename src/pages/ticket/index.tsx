@@ -20,6 +20,7 @@ type FilaType = {
 }
 
 type DescontoType = {
+  id: number,
   ticket: number,
   estacao: string,
   inicio: string,

@@ -13,6 +13,7 @@ export const Container = styled.div`
     box-shadow: 0 4px 4px rgba(0,0,0, 0.25);
     overflow-y: auto;
     overflow-x: hidden;
+    position: relative;
 `;
 
 export const InfoCard = styled.div`
@@ -123,5 +124,63 @@ export const Tabela = styled.table`
     border-radius: 18px;
     color: #fff;
   }
+  .pendente {
+    text-align: center;
+    padding: 4px 8px;
+    background: gray;
+    border-radius: 18px;
+    color: #fff;
+  }
 
+`;
+
+export const FormularioDesconto = styled.form`
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+  align-items: start;
+  position: absolute;
+  bottom: 100px;
+  right: 100px;
+  background: rgba(0, 0, 0, .5);
+  backdrop-filter: blur(5px);
+  gap: 10px;
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+
+  label{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  textarea {
+    width: 170px;
+  }
+
+  input {
+    width: 170px;
+  }
+
+  select {
+    width: 170px;
+  }
+
+  button {
+    border: 2px solid #0D3080;
+    border-radius: 4px;
+    color: #0D3080;
+    background: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 100ms ease-in-out;
+
+    :hover{
+      color: #fff;
+      background: #0D3080;
+    }
+  }
 `;
