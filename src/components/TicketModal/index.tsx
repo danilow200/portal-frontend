@@ -159,13 +159,24 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
     entrada.setHours(entrada.getHours() + 3);
     let saida = new Date(convertDateTimeline(desconto.fim));
     saida.setHours(saida.getHours() + 3);
-    row.push(["Descontos", 
+    if(desconto.aplicado){
+      row.push(["Descontos", 
               "", 
               `<div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Desconto Aprovados: </b> ${desconto.inicio} - ${desconto.fim}</div>
               <div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Período:</b>${ticket.descontos[i].total}</div>` ,
               entrada, 
               saida
             ]);
+    }else{
+      row.push(["Descontos Pendentes", 
+              "", 
+              `<div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Desconto Aprovados: </b> ${desconto.inicio} - ${desconto.fim}</div>
+              <div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Período:</b>${ticket.descontos[i].total}</div>` ,
+              entrada, 
+              saida
+            ]);
+    }
+    
 }
 
   console.log(row);
@@ -326,43 +337,46 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
         <FontAwesomeIcon icon={faSquarePlus} size="2x" onClick={() => criar_desconto()} style={{cursor: "pointer"}} />
       </TituloCard>
       
-      <Tabela role="grid">
-        <thead>
-          <tr className="cabeca">
-          <th className="sort" tabIndex={0} rowSpan={1} colSpan={1}>Inicio</th>
-            <th className="sort" tabIndex={0} rowSpan={1} colSpan={1}>Fim</th>
-            <th tabIndex={0} rowSpan={1} colSpan={1}>Tempo Total</th>
-            <th tabIndex={0} rowSpan={1} colSpan={1}>Observação</th>
-            <th tabIndex={0} rowSpan={1} colSpan={1}>Auditor</th>
-            <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
-            <th tabIndex={0} rowSpan={1} colSpan={1}>Status</th>
-            <th tabIndex={0} rowSpan={1} colSpan={1}>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ticket.descontos.map((desconto, index) => 
-            <tr key={index} role="row">
-              <td>{desconto.inicio}</td>
-              <td>{desconto.fim}</td>
-              <td>{desconto.total}</td>
-              <td>{desconto.observacao}</td>
-              <td>{desconto.auditor}</td>
-              <td><span className="categoria">{desconto.categoria}</span></td>
-              <td>{desconto.aplicado ? 
-                <span className="aprovado">APROVADO</span> : 
-                <div><span className="pendente">PENDENTE</span></div>
-                }
-              </td>
-              <td style={{display: "flex", maxWidth: "120px", height: "32px", gap: "10px", alignItems: "center", justifyContent: "center"}}>
-                {!desconto.aplicado && <FontAwesomeIcon icon={faCircleCheck} size="2x" onClick={() => aprova_desconto(desconto)} style={{color: "#0D3080", cursor: "pointer"}} />}
-                <FontAwesomeIcon icon={faPenToSquare} size="2x" onClick={() => editar_desconto(desconto)} style={{color: "#0D3080", cursor: "pointer"}}/>
-                <FontAwesomeIcon icon={faTrashCan} size="2x" onClick={() => deleta_desconto(desconto.id)} style={{color: "#0D3080", cursor: "pointer"}}/>
-              </td>
-              
+      {ticket.descontos.length != 0 &&
+        <Tabela role="grid">
+          <thead>
+            <tr className="cabeca">
+            <th className="sort" tabIndex={0} rowSpan={1} colSpan={1}>Inicio</th>
+              <th className="sort" tabIndex={0} rowSpan={1} colSpan={1}>Fim</th>
+              <th tabIndex={0} rowSpan={1} colSpan={1}>Tempo Total</th>
+              <th tabIndex={0} rowSpan={1} colSpan={1}>Observação</th>
+              <th tabIndex={0} rowSpan={1} colSpan={1}>Auditor</th>
+              <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
+              <th tabIndex={0} rowSpan={1} colSpan={1}>Status</th>
+              <th tabIndex={0} rowSpan={1} colSpan={1}>Ações</th>
             </tr>
-          )}
-        </tbody>
-      </Tabela>
+          </thead>
+          <tbody>
+            {ticket.descontos.map((desconto, index) => 
+              <tr key={index} role="row">
+                <td>{desconto.inicio}</td>
+                <td>{desconto.fim}</td>
+                <td>{desconto.total}</td>
+                <td>{desconto.observacao}</td>
+                <td>{desconto.auditor}</td>
+                <td><span className="categoria">{desconto.categoria}</span></td>
+                <td>{desconto.aplicado ? 
+                  <span className="aprovado">APROVADO</span> : 
+                  <div><span className="pendente">PENDENTE</span></div>
+                  }
+                </td>
+                <td style={{display: "flex", maxWidth: "120px", height: "32px", gap: "10px", alignItems: "center", justifyContent: "center"}}>
+                  {!desconto.aplicado && <FontAwesomeIcon icon={faCircleCheck} size="2x" onClick={() => aprova_desconto(desconto)} style={{color: "#0D3080", cursor: "pointer"}} />}
+                  <FontAwesomeIcon icon={faPenToSquare} size="2x" onClick={() => editar_desconto(desconto)} style={{color: "#0D3080", cursor: "pointer"}}/>
+                  <FontAwesomeIcon icon={faTrashCan} size="2x" onClick={() => deleta_desconto(desconto.id)} style={{color: "#0D3080", cursor: "pointer"}}/>
+                </td>
+                
+              </tr>
+            )}
+          </tbody>
+        </Tabela>
+      }
+      
       {formDesc && 
         <FormularioDesconto onSubmit={handleSubmit}>
           <label>
