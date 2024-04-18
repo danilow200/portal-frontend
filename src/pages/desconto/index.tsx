@@ -27,7 +27,8 @@ type DescontoType = {
   total: string,
   auditor: string,
   categoria: string,
-  aplicado: boolean
+  aplicado: boolean,
+  observacao: string
 }
 
 type TicketType = {
@@ -65,7 +66,7 @@ export default function Home() {
   const [countTicket, isCountTicket] = useState(10);
   const [pagina, isPagina] = useState(0);
   const [mes, isMes] = useState("Março - 2024");
-  const [selectTicket, isSelectTicket] = useState(1);
+  const [selectTicket, isSelectTicket] = useState(2);
   const [isAscending, setIsAscending] = useState(true);
   const [sortField, setSortField] = useState('');
   const [abrirFiltro, setAbrirFiltro] = useState(false);
@@ -315,7 +316,10 @@ export default function Home() {
                     <td className="ticket" onClick={() => busca_ticket(tick.ticket)}>{tick.ticket}</td>
                     <td>{tick.estacao}</td>
                     <td><span className="categoria">{tick.categoria}</span></td>
-                    <td>{tick.aplicado && <span className="aprovado">APROVADO</span>}</td>
+                    <td>
+                      {tick.aplicado && <span className="aprovado">APROVADO</span>}
+                      {!tick.aplicado && <span className="pendente">PENDENTE</span>}
+                    </td>
                     <td>{tick.inicio}</td>
                     <td>{tick.fim}</td>
                     <td>{tick.total}</td>

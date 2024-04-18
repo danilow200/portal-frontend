@@ -2,9 +2,9 @@ import axios from "axios";
 import { Container, FormularioDesconto, InfoCard, Tabela, TituloCard } from "./style";
 import { Chart } from "react-google-charts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck, faPenToSquare, faSquarePlus, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type FilaType = {
   nome: string,
@@ -21,7 +21,8 @@ type DescontoType = {
   total: string,
   auditor: string,
   categoria: string,
-  aplicado: boolean
+  aplicado: boolean,
+  observacao: string
 }
 
 type TicketType = {
@@ -41,12 +42,16 @@ type TicketType = {
 }
 
 export const TicketModal = (props: { ticketData: TicketType }) => {
+  const [ticket, setTicket] = useState(props.ticketData);
   const [inicio, setInicio] = useState('2024-04-01T00:00');
   const [fim, setFim] = useState('2024-04-01T00:00');
   const [categoria, setCategoria] = useState('Outros');
   const [observacao, setObservacao] = useState('');
+  const [aplicado, setAplicado] = useState(false);
   const [idDesconto, setIdDesconto] = useState(2);
   const [formDesc, setFormDesc] = useState(false);
+  const [formType, setFormType] = useState('novo');
+  const [aprova, setAprova] = useState(false);
 
   function convertDateFormat(dateStr: String) {
     let [date, time] = dateStr.split(' ');
@@ -76,6 +81,28 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
 
     return novaData;
   }
+
+  function convertDateTimeline(dateStr: string){
+    let [date, time] = dateStr.split(' ');
+    let [day, month, year] = date.split('/');
+    let [hour, minute, second] = time.split(':');
+    let novaData = `${year}-${month}-${day}T${hour}:${minute}:${second}.000Z`
+
+    return novaData;
+  }
+
+  useEffect(() => {
+    axios.get(`http://localhost:8000/busca_ticket/?q=${props.ticketData.ticket}`)
+    .then(function (response) {
+      // handle success
+      console.log(response.data[0]);
+      setTicket(response.data[0]);
+    })
+    .catch(function (error) {
+      // handle error
+      console.error(error);
+    });
+  }, [formDesc, aprova])
   
   const columns = [
     {type: "string", id: "Ticket"},
@@ -88,23 +115,35 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
   const row = [];
   
   row.push(["Ticket", 
-            props.ticketData.ticket.toString(), 
-            `<div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px;"><b>Incidente ${props.ticketData.ticket}</b></div>
-             <div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px;"><b>Ticket:</b> ${props.ticketData.inicio} - ${props.ticketData.fim}</div>
-             <div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px;"><b>Período:</b> ${props.ticketData.atendimento}</div>` ,
-            new Date(convertDateFormat(props.ticketData.inicio)), new Date(convertDateFormat(props.ticketData.fim))
+            ticket.ticket.toString(), 
+            `<div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Incidente ${ticket.ticket}</b></div>
+             <div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Ticket:</b> ${ticket.inicio} - ${ticket.fim}</div>
+             <div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Período:</b> ${ticket.atendimento}</div>` ,
+            new Date(convertDateFormat(ticket.inicio)), new Date(convertDateFormat(ticket.fim))
           ]);
 
-  console.log(props.ticketData)
+  console.log(ticket)
 
-  for (let i = 0; i < props.ticketData.filas.length; i++) {
-    let fila = props.ticketData.filas[i];
+  for (let i = 0; i < ticket.filas.length; i++) {
+    let fila = ticket.filas[i];
     let entrada = new Date(fila.entrada);
     entrada.setHours(entrada.getHours() + 3);
     let saida = new Date(fila.saida);
     saida.setHours(saida.getHours() + 3);
-    let total = new Date(saida - entrada);
-    row.push([fila.nome, "", total ,entrada, saida]);
+    let diff = saida.getTime() - entrada.getTime();
+    let hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+    let mins = Math.floor(diff / (1000 * 60));
+    diff -= mins * (1000 * 60);
+    let secs = Math.floor(diff / (1000));
+    let total = hours.toString().padStart(2, '0') + ':' + mins.toString().padStart(2, '0') + ':' + secs.toString().padStart(2, '0');
+    row.push([fila.nome, 
+              "", 
+              `<div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>${fila.nome}:</b> ${convertDateBack(fila.entrada)} - ${convertDateBack(fila.saida)}</div>
+              <div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Período:</b>${total}</div>` ,
+              entrada, 
+              saida
+            ]);
 }
 
   row.sort((a, b) => {
@@ -114,13 +153,19 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
     return 0;
   });
 
-  for (let i = 0; i < props.ticketData.descontos.length; i++) {
-    let desconto = props.ticketData.descontos[i];
-    let entrada = new Date(desconto.inicio);
+  for (let i = 0; i < ticket.descontos.length; i++) {
+    let desconto = ticket.descontos[i];
+    let entrada = new Date(convertDateTimeline(desconto.inicio));
     entrada.setHours(entrada.getHours() + 3);
-    let saida = new Date(desconto.fim);
+    let saida = new Date(convertDateTimeline(desconto.fim));
     saida.setHours(saida.getHours() + 3);
-    row.push(["Descontos", "", props.ticketData.descontos[i].total ,entrada, saida]);
+    row.push(["Descontos", 
+              "", 
+              `<div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Desconto Aprovados: </b> ${desconto.inicio} - ${desconto.fim}</div>
+              <div style="white-space: nowrap; padding: 4px; display: flex; aling-items: start; font-size: 14px; gap: 4px;"><b>Período:</b>${ticket.descontos[i].total}</div>` ,
+              entrada, 
+              saida
+            ]);
 }
 
   console.log(row);
@@ -141,28 +186,35 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
   };
 
   function aprova_desconto(desconto: DescontoType) {
-    console.log(desconto.id)
-    axios.post(`http://localhost:8000/update_desconto/${desconto.id}/`, {
-      "inicio": desconto.inicio,
-      "fim": desconto.fim,
-      "categoria": desconto.categoria,
-      "aplicado": true
-    })
-      .then(response => {
-          console.log(response.data);
+    if (window.confirm('Tem certeza de que deseja aprovar este desconto?')) {
+      axios.post(`http://localhost:8000/update_desconto/${desconto.id}/`, {
+        "inicio": desconto.inicio,
+        "fim": desconto.fim,
+        "categoria": desconto.categoria,
+        "aplicado": true,
+        "observacao": desconto.observacao
       })
-      .catch(error => {
-          console.error(error);
-      });
-  }
-  function deleta_desconto(descontoId: any) {
-    axios.delete(`http://localhost:8000/delete_desconto/${descontoId}/`)
         .then(response => {
             console.log(response.data);
         })
         .catch(error => {
             console.error(error);
         });
+    }
+    setAprova(!aprova);
+  }
+
+  function deleta_desconto(descontoId: any) {
+    if (window.confirm('Tem certeza de que deseja excluir este desconto?')) {
+        axios.delete(`http://localhost:8000/delete_desconto/${descontoId}/`)
+            .then(response => {
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+    setAprova(!aprova);
   }
 
   const handleSubmit = (event: { preventDefault: () => void; }) => {
@@ -176,6 +228,9 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
     setInicio(convertDateFormat2(desconto.inicio));
     setFim(convertDateFormat2(desconto.fim));
     setCategoria(desconto.categoria);
+    setAplicado(desconto.aplicado);
+    setObservacao(desconto.observacao);
+    setFormType('editar');
     setFormDesc(!formDesc);
   }
 
@@ -190,7 +245,7 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
       "inicio": inicio_convertido,
       "fim": fim_convertido,
       "categoria": categoria,
-      "aplicado": true
+      "aplicado": aplicado
     })
       .then(response => {
           console.log(response.data);
@@ -198,6 +253,37 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
       .catch(error => {
           console.error(error);
       });
+      setFormDesc(!formDesc);
+  }
+  
+  function criar_desconto(){
+    setInicio('0000-00-00T00:00');
+    setFim('0000-00-00T00:00');
+    setCategoria('Aguardando CIGR');
+    setFormType('novo');
+    setFormDesc(!formDesc);
+  }
+
+  function request_criar_desconto() {
+    let inicio_convertido = convertDateBack(inicio);
+    let fim_convertido = convertDateBack(fim);
+    console.log(inicio_convertido);
+    console.log(fim_convertido);
+    console.log(categoria);
+    axios.post(`http://localhost:8000/post_desconto/${ticket.ticket}/`, {
+      "inicio": inicio_convertido,
+      "fim": fim_convertido,
+      "categoria": categoria,
+      "aplicado": false,
+      "observacao": observacao
+    })
+      .then(response => {
+          console.log(response.data);
+      })
+      .catch(error => {
+          console.error(error);
+      });
+      setFormDesc(!formDesc);
   }
 
   return( 
@@ -205,27 +291,27 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
       <div style={{ display: "flex", justifyContent: "space-between", gap: "100px"}}>
         <InfoCard>
           <span className="esquerda titulo">Ticket: </span>
-          <span className="titulo">{props.ticketData.ticket}</span>
+          <span className="titulo">{ticket.ticket}</span>
           <span className="esquerda">Site: </span>
-          <span>{props.ticketData.estacao}</span>
+          <span>{ticket.estacao}</span>
           <span className="esquerda">Causa: </span>
-          <span>{props.ticketData.descricao}</span>
+          <span>{ticket.descricao}</span>
           <span className="esquerda">Categoria: </span>
-          <span>{props.ticketData.categoria}</span>
+          <span>{ticket.categoria}</span>
           <span className="esquerda">Prioridade: </span>
-          <span>{props.ticketData.prioridade}</span>
+          <span>{ticket.prioridade}</span>
           <span className="esquerda">Status: </span>
-          <span>{props.ticketData.status}</span>
+          <span>{ticket.status}</span>
         </InfoCard>
         <InfoCard>
           <span className="esquerda titulo">SLA: </span>
-          <span className="titulo">{props.ticketData.sla}</span>
+          <span className="titulo">{ticket.sla}</span>
           <span className="esquerda">Abertura: </span>
-          <span>{props.ticketData.inicio}</span>
+          <span>{ticket.inicio}</span>
           <span className="esquerda">Fechamento: </span>
-          <span>{props.ticketData.fim}</span>
+          <span>{ticket.fim}</span>
           <span className="esquerda">Atendimento: </span>
-          <span>{props.ticketData.atendimento}</span>
+          <span>{ticket.atendimento}</span>
         </InfoCard>
       </div>
       <Chart
@@ -235,13 +321,18 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
         height="300px"
         options={timeline_options}
       />
-      <TituloCard>Descontos</TituloCard>
+      <TituloCard>
+        <span>Descontos</span>
+        <FontAwesomeIcon icon={faSquarePlus} size="2x" onClick={() => criar_desconto()} style={{cursor: "pointer"}} />
+      </TituloCard>
+      
       <Tabela role="grid">
         <thead>
           <tr className="cabeca">
           <th className="sort" tabIndex={0} rowSpan={1} colSpan={1}>Inicio</th>
             <th className="sort" tabIndex={0} rowSpan={1} colSpan={1}>Fim</th>
             <th tabIndex={0} rowSpan={1} colSpan={1}>Tempo Total</th>
+            <th tabIndex={0} rowSpan={1} colSpan={1}>Observação</th>
             <th tabIndex={0} rowSpan={1} colSpan={1}>Auditor</th>
             <th tabIndex={0} rowSpan={1} colSpan={1}>Categoria</th>
             <th tabIndex={0} rowSpan={1} colSpan={1}>Status</th>
@@ -249,11 +340,12 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
           </tr>
         </thead>
         <tbody>
-          {props.ticketData.descontos.map((desconto, index) => 
+          {ticket.descontos.map((desconto, index) => 
             <tr key={index} role="row">
               <td>{desconto.inicio}</td>
               <td>{desconto.fim}</td>
               <td>{desconto.total}</td>
+              <td>{desconto.observacao}</td>
               <td>{desconto.auditor}</td>
               <td><span className="categoria">{desconto.categoria}</span></td>
               <td>{desconto.aplicado ? 
@@ -299,7 +391,8 @@ export const TicketModal = (props: { ticketData: TicketType }) => {
             Observação:
             <textarea value={observacao} onChange={e => setObservacao(e.target.value)} />
           </label>
-          <button type="submit" onClick={() => request_editar_desconto()}>Atualizar Desconto</button>
+          {formType == 'editar' && <button type="submit" onClick={() => request_editar_desconto()}>Atualizar Desconto</button>}
+          {formType == 'novo' && <button type="submit" onClick={() => request_criar_desconto()}>Criar Desconto</button>}
         </FormularioDesconto>
       }
       

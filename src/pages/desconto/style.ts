@@ -72,6 +72,14 @@ export const Tabela = styled.table`
     border-radius: 18px;
     color: #fff;
   }
+
+  .pendente {
+    text-align: center;
+    padding: 4px 8px;
+    background: gray;
+    border-radius: 18px;
+    color: #fff;
+  }
 `;
 
 export const HeaderArea = styled.div`

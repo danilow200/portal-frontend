@@ -53,6 +53,7 @@ export const TituloCard = styled.div`
     height: 30px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid #0D3080;
     color: #0D3080;
     font-weight: bold;
@@ -108,13 +109,14 @@ export const Tabela = styled.table`
     cursor: pointer;
   }
 
-  .categoria span {
+  .categoria {
     text-align: center;
     padding: 4px 8px;
     background: #0D3080;
     border-radius: 18px;
     color: #fff;
     text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .aprovado {

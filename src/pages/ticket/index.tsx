@@ -28,7 +28,8 @@ type DescontoType = {
   total: string,
   auditor: string,
   categoria: string,
-  aplicado: boolean
+  aplicado: boolean,
+  observacao: string
 }
 
 type TicketType = {
@@ -60,6 +61,7 @@ const qs = require('qs');
 
 export default function Home() {
   const [tickets, setTickets] = useState<TicketType[]>([]);
+  const [ticketsBack, setTicketsBack] = useState<TicketType[]>([]);
   const [select, isSelect] = useState(false);
   const [count, isCount] = useState(false);
   const [countTicket, isCountTicket] = useState(10);
@@ -101,6 +103,30 @@ export default function Home() {
     });
   
     setTickets(sortedTickets);
+
+    const sortedTickets2 = [...ticketsBack].sort((a: TicketType, b: TicketType) => {
+      let valueA: number = 0, valueB: number = 0;
+      if (field === 'inicio' || field === 'fim') {
+        const [date, time] = a[field].split(" ");
+        const [day, month, year] = date.split("/");
+        valueA = new Date(`${month}/${day}/${year} ${time}`).getTime();
+        
+        const [dateB, timeB] = b[field].split(" ");
+        const [dayB, monthB, yearB] = dateB.split("/");
+        valueB = new Date(`${monthB}/${dayB}/${yearB} ${timeB}`).getTime();
+      }  else if (field === 'ticket') {
+        valueA = a[field];
+        valueB = b[field];
+      }
+      if (inverte){
+        return isAscending ? valueA - valueB : valueB - valueA;
+      }
+      else{
+        return !isAscending ? valueA - valueB : valueB - valueA;
+      }
+    });
+  
+    setTicketsBack(sortedTickets2);
     if (inverte){
       setIsAscending(!isAscending); // inverte a direção para a próxima vez que sortTicket for chamada
     }
@@ -124,6 +150,7 @@ export default function Home() {
       const response = await axios(config);
       console.log(response.data);
       setTickets(response.data);
+      setTicketsBack(response.data);
       setAltera(!altera);
   
       // Agora que a requisição foi concluída e os tickets foram atualizados,
@@ -151,6 +178,7 @@ export default function Home() {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
           });
+          console.log(data);
         } catch (e) {
           // Se ocorrer um erro (por exemplo, o usuário não está autenticado), registra "not auth" no console.
           console.log("not auth");
@@ -290,6 +318,12 @@ function deleteTicket(ticketId: any) {
       });
 }
 
+function buscaTabela(e: any){
+  const ticketBusca = ticketsBack;
+  const result = ticketBusca.filter(ticketBusca => ticketBusca.ticket.toString().indexOf(e) !== -1 || ticketBusca.estacao.toString().toLowerCase().indexOf(e) !== -1);
+  setTickets(result);
+}
+
 
   // Retornando o JSX para renderizar na página.
   return (
@@ -335,7 +369,7 @@ function deleteTicket(ticketId: any) {
 
           <HeaderArea>
             <div style={{position: "relative"}}>
-              <BuscaInput id="busca" placeholder="Busca" />
+              <BuscaInput onChange={(e) => buscaTabela(e.target.value)} id="busca" placeholder="Busca" />
               <label htmlFor="busca" style={{position: "absolute", top: "10px", left: "8px"}}>
                 <Image src={"/search.png"} width={15}  height={16} alt="busca_icon" />
               </label>
