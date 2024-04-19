@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
 import { Container, NavA } from "./style";
+import { Burger } from "./Burger";
 
 const navlink = [
     {
@@ -52,7 +53,8 @@ export const Navbar = () => {
     return (
         <Container estado={aberto}>
             <NavA>
-                <img style={{marginLeft: "4px", cursor: "pointer", pointerEvents: "all"}} src="./nav/ham.png" onClick={() => setAberto(!aberto)} />
+                <Burger open={aberto} setOpen={setAberto} />
+                {/* <img style={{marginLeft: "4px", cursor: "pointer", pointerEvents: "all"}} src="./nav/ham.png" onClick={() => setAberto(!aberto)} /> */}
                 <span style={{
                         textAlign: "center",
                         width: "100%",
