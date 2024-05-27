@@ -6,7 +6,7 @@ import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
-import { BuscaInput, CountArea, DowloadButton, FilterModal, HeaderArea, ModalContainer, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, SemTicketMessagem, Tabela, UploadButton } from "./style";
+import { BuscaInput, CountArea, DowloadButton, FilterModal, HeaderArea, ModalContainer, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, SemTicketMessagem, Tabela, UploadButton } from "../../styles/ticket_style";
 import Image from "next/image";
 import { relative } from "path";
 import { ToastContainer, toast } from 'react-toastify';

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BorderContainer, Container, LoginButton, LoginIpunt } from "./style";
+import { BorderContainer, Container, LoginButton, LoginIpunt } from "../../styles/login_style";
 
 export default function Login() {
   const [isAuth, setIsAuth] = useState(false);

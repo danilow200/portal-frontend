@@ -6,7 +6,7 @@ import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
-import { BuscaInput, CountArea, DowloadButton, FilterModal, HeaderArea, ModalContainer, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, SemTicketMessagem, Tabela, UploadButton } from "./style";
+import { BuscaInput, CountArea, DowloadButton, FilterModal, HeaderArea, ModalContainer, NavButton, PagButton, PagContainer, QuantidadeTicket, SelectArea, SemTicketMessagem, Tabela, UploadButton } from "../../styles/desconto_style";
 import Image from "next/image";
 import { relative } from "path";
 import { ToastContainer, toast } from 'react-toastify';
@@ -20,6 +20,7 @@ type FilaType = {
 }
 
 type DescontoType = {
+  id: number,
   ticket: number,
   estacao: string,
   inicio: string,
@@ -60,7 +61,7 @@ const qs = require('qs');
 
 export default function Home() {
   const [tickets, setTickets] = useState<DescontoType[]>([]);
-  const [oTicket, setOTicket] = useState<TicketType | undefined>();
+  const [oTicket, setOTicket] = useState<TicketType[]>([]);
   const [select, isSelect] = useState(false);
   const [count, isCount] = useState(false);
   const [countTicket, isCountTicket] = useState(10);
@@ -184,7 +185,7 @@ export default function Home() {
     isMes(String(e.target.value));
   }
 
-  const busca_ticket = async (e: Number) => {
+  const busca_ticket = async (e: any) => {
     axios.get(`http://localhost:8000/busca_ticket/?q=${e}`)
     .then(function (response) {
       // handle success

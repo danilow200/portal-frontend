@@ -4,7 +4,7 @@ import axios from "axios";
 import { Header } from "../../components/Header";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Foooter";
-import { Imgbox, Container, LinkBox } from "./style";
+import { Imgbox, Container, LinkBox } from "../../styles/plataformas_style";
 
 const lista_plataforma = [
     {
